@@ -76,4 +76,3 @@ const MODEL = "openai/gpt-oss-120b:free"; // Model
 ---
 
 Yaratuvchi: **InfortX · Akbarshoxbek**
-# aichat
