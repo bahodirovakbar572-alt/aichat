@@ -34,75 +34,30 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // SSE endpoint — streaming chat
 app.post("/api/chat", async (req, res) => {
-  const { messages } = req.body;
+    try {
+        const { message } = req.body; // Frontend'dan kelgan xabar
 
-  if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: "messages array kerak" });
-  }
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "model": MODEL,
+                "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": message}
+                ]
+            })
+        });
 
-  const fullMessages = [
-    { role: "system", content: SYSTEM_PROMPT },
-    ...messages,
-  ];
-
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: fullMessages,
-        stream: true,
-      }),
-    });
-
-    if (!response.ok) {
-      const errData = await response.json();
-      const errMsg = errData?.error?.message || "API xatosi";
-      res.write(`data: ${JSON.stringify({ error: errMsg })}\n\n`);
-      return res.end();
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error("Xato:", error);
+        res.status(500).json({ error: "Serverda xato yuz berdi" });
     }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value);
-      const lines = chunk.split("\n").filter((l) => l.trim());
-
-      for (const line of lines) {
-        if (line.startsWith("data: ")) {
-          const data = line.slice(6);
-          if (data === "[DONE]") {
-            res.write(`data: [DONE]\n\n`);
-          } else {
-            try {
-              const parsed = JSON.parse(data);
-              const token = parsed.choices?.[0]?.delta?.content || "";
-              if (token) {
-                res.write(`data: ${JSON.stringify({ token })}\n\n`);
-              }
-            } catch (_) {}
-          }
-        }
-      }
-    }
-
-    res.end();
-  } catch (err) {
-    res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
-    res.end();
-  }
 });
 
 app.listen(PORT, () => {
