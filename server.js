@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL = "z-ai/glm-4.5-air:free";
+MODEL = "z-ai/glm-4.5-air:free";
 
 const SYSTEM_PROMPT = `Sen Lunasan. [InfortX, Akbarshoxbek] tomonidan yaratilgansan. 
 
