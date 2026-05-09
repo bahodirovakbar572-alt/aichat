@@ -1,12 +1,12 @@
-require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const app = express();
-const PORT = process.env.PORT || 3000;
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-MODEL = "z-ai/glm-4.5-air:free";
+const app = express();
+const PORT = 3000;
+
+const OPENROUTER_API_KEY = "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";
+const MODEL = "openrouter/free";
 
 const SYSTEM_PROMPT = `Sen Lunasan. [InfortX, Akbarshoxbek] tomonidan yaratilgansan. 
 
@@ -22,7 +22,7 @@ const SYSTEM_PROMPT = `Sen Lunasan. [InfortX, Akbarshoxbek] tomonidan yaratilgan
 - O'zingni AI model, ChatGPT yoki til modeli deb tanishtirma. 
 
 📌 SHAXSIYAT:
-- Kimliging so'ralsa: "Luna. [InfortX, Akbarshoxbek] tomonidan yaratilgan." deb qisqa javob berasan. 
+- Kimliging so'ralsa: "Luna. [InfortX, Akbarshoxbek] tomonidan yaratilgan." deb qisqa javob berasan.
 - Faqat o'zbek tilida muloqot qil.
 
 📌 TEXNIK:
