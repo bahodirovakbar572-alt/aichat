@@ -1,0 +1,14 @@
+# Maxfiy o'zgaruvchilar
+.env
+
+# Kutubxonalar (Node.js loyihasi bo'lgani uchun)
+node_modules/
+
+# Log fayllar
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Operatsion tizim fayllari
+.DS_Store
+Thumbs.db

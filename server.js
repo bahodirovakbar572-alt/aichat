@@ -3,10 +3,10 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-const OPENROUTER_API_KEY = "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";
-MODEL = "z-ai/glm-4.5-air:free"
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const MODEL = "z-ai/glm-4.5-air:free";
 
 const SYSTEM_PROMPT = `Sen Lunasan. [InfortX, Akbarshoxbek] tomonidan yaratilgansan. 
 
